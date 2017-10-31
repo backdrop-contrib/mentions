@@ -1,7 +1,7 @@
 (function ($) {
-  Drupal.behaviors.mentionsTextcomplete = {
+  Backdrop.behaviors.mentionsTextcomplete = {
     attach: function () {
-      var settings = Drupal.settings.mentions.textcomplete;
+      var settings = Backdrop.settings.mentions.textcomplete;
       var matchExp = new RegExp('\\B' + settings.prefix_regex + '(\\w*)$');
 
       $.each(settings.forms, function (index, form) {
@@ -12,7 +12,7 @@
             search: function (term, callback) {
               var format_id = $('select[id^="' + this.form + '-format"]').val();
               if ($.inArray(format_id, settings.formats) != -1) {
-                $.getJSON(Drupal.settings.basePath + 'mentions/autocomplete/' + format_id + '/' + term, function (resp) {
+                $.getJSON(Backdrop.settings.basePath + 'mentions/autocomplete/' + format_id + '/' + term, function (resp) {
                   callback(resp);
                 });
               }

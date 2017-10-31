@@ -5,7 +5,7 @@
  */
 
 /**
- * Implements hook_views_default_views().().
+ * Implements hook_views_default_views().
  */
 function mentions_views_default_views() {
   $view              = new view();

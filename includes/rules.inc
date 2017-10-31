@@ -5,7 +5,7 @@
  */
 
 /**
- * Implements hook_rules_data_info().().
+ * Implements hook_rules_data_info().
  */
 function mentions_rules_data_info() {
   return array(
@@ -48,7 +48,7 @@ function mentions_rules_data_info() {
 }
 
 /**
- * Implements hook_rules_event_info().().
+ * Implements hook_rules_event_info().
  */
 function mentions_rules_event_info() {
   $items = array();

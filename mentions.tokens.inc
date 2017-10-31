@@ -5,7 +5,7 @@
  */
 
 /**
- * Implements hook_token_info().().
+ * Implements hook_token_info().
  */
 function mentions_token_info() {
   $type = array(
@@ -52,7 +52,7 @@ function mentions_token_info() {
 }
 
 /**
- * Implements hook_tokens().().
+ * Implements hook_tokens().
  */
 function mentions_tokens($type, $tokens, array $data = array(), array $options = array()) {
   $config = config('mentions.settings');

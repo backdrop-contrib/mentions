@@ -5,7 +5,7 @@
  */
 
 /**
- * Implements hook_schema().().
+ * Implements hook_schema().
  */
 function mentions_schema() {
   $schema['mentions'] = array(
@@ -63,16 +63,6 @@ function mentions_schema() {
 }
 
 /**
- * Implements hook_uninstall().().
- */
-function mentions_uninstall() {
-  config_clear('mentions.settings', 'mentions');
-}
-
-// TODO The old hook_update_N functions cannot be applied to Backdrop.
-function mentions_update_7100() { }
-
-/**
  * Implements hook_update_last_removed().
  */
 function mentions_update_last_removed() {
@@ -84,27 +74,13 @@ function mentions_update_last_removed() {
  */
 function mentions_update_1000() {
   $config = config('mentions .settings');
-  $config->set('mentions', update_variable_get('mentions', 'dynamic value in file /mentions/mentions.module line 550'));
-  $config->set('mentions_input_prefix', update_variable_get('mentions_input_prefix', 'dynamic value in file /mentions/mentions.install line 115'));
-  $config->set('mentions_input_suffix', update_variable_get('mentions_input_suffix', 'dynamic value in file /mentions/mentions.install line 116'));
-  $config->set('mentions_output_prefix', update_variable_get('mentions_output_prefix', '@'));
-  $config->set('mentions_output_suffix', update_variable_get('mentions_output_suffix', ''));
-  $config->set('mentions_output_content', update_variable_get('mentions_output_content', 'dynamic value in file /mentions/mentions.install line 122'));
+  $config->set('mentions', update_variable_get('mentions', mentions_defaults()));
   update_variable_del('mentions');
-  update_variable_del('mentions_input_prefix');
-  update_variable_del('mentions_input_suffix');
-  update_variable_del('mentions_output_prefix');
-  update_variable_del('mentions_output_suffix');
-  update_variable_del('mentions_output_content');
 }
 
 /**
  * Implements hook_install().
  */
 function mentions_install() {
-  // Dynamically generated variable data was detected.
-  // /mentions/mentions.module line 550
-  // /mentions/mentions.install line 115
-  // /mentions/mentions.install line 116
-  // /mentions/mentions.install line 122
+  config_set('mentions.settings', 'mentions', mentions_defaults());
 }

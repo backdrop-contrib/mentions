@@ -5,7 +5,7 @@
  */
 
 /**
- * Implements hook_libraries_info().().
+ * Implements hook_libraries_info().
  */
 function mentions_libraries_info() {
   $libraries['textcomplete'] = array(

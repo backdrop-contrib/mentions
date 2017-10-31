@@ -17,10 +17,10 @@ foreach (module_list() as $module) {
 }
 
 // Textcomplete library path (for users not using the Libraries module).
-define('MENTIONS_TEXTCOMPLETE_PATH', 'sites/all/libraries/textcomplete/dist');
+define('MENTIONS_TEXTCOMPLETE_PATH', 'textcomplete');
 
 /**
- * Implements hook_menu().().
+ * Implements hook_menu().
  */
 function mentions_menu() {
   $items['admin/config/content/mentions'] = array(
@@ -58,7 +58,7 @@ function _mentions_access($format_id = '') {
 }
 
 /**
- * Implements hook_load().().
+ * Implements hook_load().
  */
 function mentions_load($mid) {
   $mention = db_select('mentions', 'm')
@@ -71,7 +71,7 @@ function mentions_load($mid) {
 }
 
 /**
- * Implements hook_theme().().
+ * Implements hook_theme().
  */
 function mentions_theme() {
   $items = array();
@@ -93,7 +93,7 @@ function mentions_theme() {
 }
 
 /**
- * Implements hook_element_info_alter().().
+ * Implements hook_element_info_alter().
  */
 function mentions_element_info_alter(&$type) {
   if (mentions_library_exists()) {
@@ -102,7 +102,7 @@ function mentions_element_info_alter(&$type) {
 }
 
 /**
- * Implements hook_filter_info().().
+ * Implements hook_filter_info().
  */
 function mentions_filter_info() {
   $filters = array();
@@ -148,7 +148,7 @@ function mentions_filter_filter_mentions_tips($format, $long = FALSE) {
 }
 
 /**
- * Implements hook_entity_insert().().
+ * Implements hook_entity_insert().
  */
 function mentions_entity_insert($entity, $type) {
   $mentions = array();
@@ -179,14 +179,14 @@ function mentions_entity_insert($entity, $type) {
 }
 
 /**
- * Implements hook_entity_update().().
+ * Implements hook_entity_update().
  */
 function mentions_entity_update($entity, $type) {
   mentions_entity_insert($entity, $type);
 }
 
 /**
- * Implements hook_entity_delete().().
+ * Implements hook_entity_delete().
  */
 function mentions_entity_delete($entity, $type) {
   list($id, $vid, $bundle_name) = entity_extract_ids($type, $entity);
@@ -472,7 +472,7 @@ function mentions_library_exists() {
     }
 
     // Check for library from the default location.
-    elseif (file_exists(MENTIONS_TEXTCOMPLETE_PATH . '/jquery.textcomplete.min.js')) {
+    elseif (file_exists(backdrop_get_path('module', 'mentions') . '/textcomplete/dist/jquery.textcomplete.min.js')) {
       $mentions_library = 'default';
 
       return TRUE;
@@ -493,8 +493,8 @@ function mentions_library_load() {
     if (!$loaded) {
       switch ($mentions_library) {
         case 'default':
-          backdrop_add_css(MENTIONS_TEXTCOMPLETE_PATH . '/jquery.textcomplete.css');
-          backdrop_add_js(MENTIONS_TEXTCOMPLETE_PATH . '/jquery.textcomplete.min.js');
+          backdrop_add_css(backdrop_get_path('module', 'mentions') . '/textcomplete/dist/jquery.textcomplete.css');
+          backdrop_add_js(backdrop_get_path('module', 'mentions') . '/textcomplete/dist/jquery.textcomplete.min.js');
           break;
 
         case 'libraries':
