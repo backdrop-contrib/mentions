@@ -1,9 +1,9 @@
+Mentions
+========
+
 The Mentions module offers Twitter like functionality, recording all references
 to a user's username - using the [@username] or [@#uid] filter format - from
 various locations, providing a centralized page to track all mentions.
-
-Mentions was written and is maintained by Stuart Clark (deciphered).
-- http://stuar.tc/lark
 
 
 
@@ -23,16 +23,7 @@ Features
 
 
 
-Recommended Modules
---------------------------------------------------------------------------------
-
-* Libraries API - https://backdrop.org/project/libraries
-* Token         - https://backdrop.org/project/token
-* Views         - https://backdrop.org/project/views
-
-
-
-jQuery textcomplete - Autocompletion of mentions
+jQuery textcomplete - Autocompletion of mentions (not working with core)
 --------------------------------------------------------------------------------
 
 The jQuery textcomplete library adds autocompletion of mentions, to install it
@@ -65,3 +56,22 @@ formats, this can be done via the Text formats page.
 Customisation settings for input and output patterns are available via the
 Mentions configuration form:
 * http://[www.yoursite.com/path/to/backdrop]/admin/config/content/mentions
+
+
+License
+-------
+
+This project is GPL v2 software. See the LICENSE.txt file in this directory for
+complete text.
+
+Current Maintainers
+-------------------
+
+- docwilmot (https://github.com/docwilmot
+
+Credit
+-------
+
+Mentions was written and is maintained for Drupal by Stuart Clark (deciphered).
+- http://stuar.tc/lark
+
