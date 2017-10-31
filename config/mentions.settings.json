@@ -1,0 +1,9 @@
+{
+    "_config_name": "mentions.settings",
+    "mentions": "dynamic value in file /mentions/mentions.module line 550",
+    "mentions_input_prefix": "dynamic value in file /mentions/mentions.install line 115",
+    "mentions_input_suffix": "dynamic value in file /mentions/mentions.install line 116",
+    "mentions_output_prefix": "@",
+    "mentions_output_suffix": "",
+    "mentions_output_content": "dynamic value in file /mentions/mentions.install line 122"
+}

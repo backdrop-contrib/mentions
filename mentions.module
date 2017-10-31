@@ -20,24 +20,24 @@ foreach (module_list() as $module) {
 define('MENTIONS_TEXTCOMPLETE_PATH', 'sites/all/libraries/textcomplete/dist');
 
 /**
- * Implements hook_menu().
+ * Implements hook_menu().().
  */
 function mentions_menu() {
   $items['admin/config/content/mentions'] = array(
-    'title'            => 'Mentions',
-    'page callback'    => 'drupal_get_form',
-    'page arguments'   => array('mentions_form'),
+    'title' => 'Mentions',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('mentions_form'),
     'access arguments' => array('administer filters'),
-    'file'             => 'mentions.admin.inc',
-    'type'             => MENU_NORMAL_ITEM,
+    'file' => 'mentions.admin.inc',
+    'type' => MENU_NORMAL_ITEM,
   );
 
   $items['mentions/autocomplete/%'] = array(
-    'title'            => 'Mentions autocomplete',
-    'page callback'    => 'mentions_autocomplete',
-    'access callback'  => '_mentions_access',
+    'title' => 'Mentions autocomplete',
+    'page callback' => 'mentions_autocomplete',
+    'access callback' => '_mentions_access',
     'access arguments' => array(2),
-    'type'             => MENU_CALLBACK,
+    'type' => MENU_CALLBACK,
   );
 
   return $items;
@@ -58,7 +58,7 @@ function _mentions_access($format_id = '') {
 }
 
 /**
- * Implements hook_load().
+ * Implements hook_load().().
  */
 function mentions_load($mid) {
   $mention = db_select('mentions', 'm')
@@ -71,7 +71,7 @@ function mentions_load($mid) {
 }
 
 /**
- * Implements hook_theme().
+ * Implements hook_theme().().
  */
 function mentions_theme() {
   $items = array();
@@ -85,7 +85,7 @@ function mentions_theme() {
   $items['mentions_input'] = array(
     'variables' => array(
       'text' => NULL,
-      'raw'  => FALSE,
+      'raw' => FALSE,
     ),
   );
 
@@ -93,7 +93,7 @@ function mentions_theme() {
 }
 
 /**
- * Implements hook_element_info_alter().
+ * Implements hook_element_info_alter().().
  */
 function mentions_element_info_alter(&$type) {
   if (mentions_library_exists()) {
@@ -102,25 +102,25 @@ function mentions_element_info_alter(&$type) {
 }
 
 /**
- * Implements hook_filter_info().
+ * Implements hook_filter_info().().
  */
 function mentions_filter_info() {
   $filters = array();
 
   $filters['filter_mentions'] = array(
-    'title'            => t("Mentions filter"),
-    'description'      => t("Converts @username and @uid into a link the user's profile page.", array(
+    'title' => t("Mentions filter"),
+    'description' => t("Converts @username and @uid into a link the user's profile page.", array(
       '@username' => theme('mentions_input', array(
         'text' => 'username',
-        'raw'  => TRUE
+        'raw' => TRUE,
       )),
-      '@uid'      => theme('mentions_input', array(
+      '@uid' => theme('mentions_input', array(
         'text' => '#uid',
-        'raw'  => TRUE
+        'raw' => TRUE,
       )),
     )),
     'process callback' => 'mentions_filter_filter_mentions_process',
-    'tips callback'    => 'mentions_filter_filter_mentions_tips',
+    'tips callback' => 'mentions_filter_filter_mentions_tips',
   );
 
   return $filters;
@@ -143,12 +143,12 @@ function mentions_filter_filter_mentions_process($text, $filter, $format) {
 function mentions_filter_filter_mentions_tips($format, $long = FALSE) {
   return t("Converts !username and !uid into a link the user's profile page.", array(
     '!username' => theme('mentions_input', array('text' => 'username')),
-    '!uid'      => theme('mentions_input', array('text' => '#uid')),
+    '!uid' => theme('mentions_input', array('text' => '#uid')),
   ));
 }
 
 /**
- * Implements hook_entity_insert().
+ * Implements hook_entity_insert().().
  */
 function mentions_entity_insert($entity, $type) {
   $mentions = array();
@@ -179,14 +179,14 @@ function mentions_entity_insert($entity, $type) {
 }
 
 /**
- * Implements hook_entity_update().
+ * Implements hook_entity_update().().
  */
 function mentions_entity_update($entity, $type) {
   mentions_entity_insert($entity, $type);
 }
 
 /**
- * Implements hook_entity_delete().
+ * Implements hook_entity_delete().().
  */
 function mentions_entity_delete($entity, $type) {
   list($id, $vid, $bundle_name) = entity_extract_ids($type, $entity);
@@ -220,12 +220,12 @@ function mentions_crud_update($entity_type, $mentions, $entity_id, $author) {
   foreach (array_diff($new_users, array_keys($old_users)) as $uid) {
     $mention = array(
       'entity_type' => $entity_type,
-      'entity_id'   => $entity_id,
-      'uid'         => $uid,
-      'auid'        => $author,
-      'created'     => REQUEST_TIME,
+      'entity_id' => $entity_id,
+      'uid' => $uid,
+      'auid' => $author,
+      'created' => REQUEST_TIME,
     );
-    drupal_write_record('mentions', $mention);
+    backdrop_write_record('mentions', $mention);
     module_invoke_all('mentions_insert', (object) $mention);
   }
 
@@ -233,7 +233,7 @@ function mentions_crud_update($entity_type, $mentions, $entity_id, $author) {
   foreach (array_intersect($new_users, array_keys($old_users)) as $uid) {
     $mention          = mentions_load($old_users[$uid]);
     $mention->changed = REQUEST_TIME;
-    drupal_write_record('mentions', $mention, array('mid'));
+    backdrop_write_record('mentions', $mention, array('mid'));
     module_invoke_all('mentions_update', $mention);
   }
 
@@ -261,6 +261,16 @@ function mentions_crud_delete($entity_type, $entity_id) {
 }
 
 /**
+ * Implements hook_config_info().
+ */
+function mentions_config_info() {
+  $prefixes['mentions.settings'] = array(
+    'label' => t('Module name settings'),
+    'group' => t('Configuration'),
+  );
+}
+
+/**
  * Analyze text for [@username] and [@#uid] references.
  *
  * @param $text
@@ -270,7 +280,7 @@ function mentions_crud_delete($entity_type, $entity_id) {
  *   An array of matched text and user accounts.
  */
 function mentions_get_mentions($text) {
-  $settings = variable_get('mentions', mentions_defaults());
+  $settings = config_get('mentions.settings', 'mentions');
   $users    = array();
 
   // Build regular expression pattern.
@@ -293,8 +303,8 @@ function mentions_get_mentions($text) {
   if (preg_match_all($pattern, $text, $matches, PREG_SET_ORDER)) {
     foreach ($matches as $match) {
       // Load user mentioned by user ID.
-      if (drupal_substr($match[2], 0, 1) == '#') {
-        $user = user_load(drupal_substr($match[2], 1));
+      if (backdrop_substr($match[2], 0, 1) == '#') {
+        $user = user_load(backdrop_substr($match[2], 1));
       }
       elseif ($match[1] == '#') {
         $user = user_load($match[2]);
@@ -343,7 +353,7 @@ function mentions_get_mentions($text) {
 function mentions_process_text_format($element, $form_state) {
   // If library exists, attach Mentions javacript.
   if (mentions_library_exists()) {
-    $formats         =& drupal_static(__FUNCTION__, array());
+    $formats         = &backdrop_static(__FUNCTION__, array());
     $filter_formats  = array();
     $mentions_filter = FALSE;
     if (isset($element['format']['format']['#options']) && is_array($element['format']['format']['#options'])) {
@@ -361,23 +371,23 @@ function mentions_process_text_format($element, $form_state) {
 
     if ($mentions_filter) {
       mentions_library_load();
-      $settings = variable_get('mentions', mentions_defaults());
+      $settings = config_get('mentions.settings', 'mentions');
 
-      drupal_add_js(array(
+      backdrop_add_js(array(
         'mentions' => array(
           'textcomplete' => array(
-            'forms'        => array($element['#id']),
-            'formats'      => $filter_formats,
-            'prefix'       => $settings['input']['prefix'],
+            'forms' => array($element['#id']),
+            'formats' => $filter_formats,
+            'prefix' => $settings['input']['prefix'],
             'prefix_regex' => preg_quote($settings['input']['prefix']),
-            'suffix'       => $settings['input']['suffix'],
-          )
+            'suffix' => $settings['input']['suffix'],
+          ),
         ),
       ), array(
-        'type'  => 'setting',
+        'type' => 'setting',
         'scope' => JS_DEFAULT,
       ));
-      drupal_add_js(drupal_get_path('module', 'mentions') . '/js/mentions.textcomplete.js');
+      backdrop_add_js(backdrop_get_path('module', 'mentions') . '/js/mentions.textcomplete.js');
     }
   }
 
@@ -392,7 +402,7 @@ function mentions_process_text_format($element, $form_state) {
 function mentions_autocomplete($string = '') {
   $matches = array();
   if ($string) {
-    $settings = variable_get('mentions', mentions_defaults());
+    $settings = config_get('mentions.settings', 'mentions');
 
     $query = new EntityFieldQuery();
     $query->entityCondition('entity_type', 'user')
@@ -437,14 +447,14 @@ function mentions_autocomplete($string = '') {
     }
   }
 
-  drupal_json_output($matches);
+  backdrop_json_output($matches);
 }
 
 /**
  * Check if the Mentions textcomplete library is present.
  */
 function mentions_library_exists() {
-  $mentions_library =& drupal_static('mentions_library', NULL);
+  $mentions_library = &backdrop_static('mentions_library', NULL);
 
   if ($mentions_library === FALSE) {
     return FALSE;
@@ -477,14 +487,14 @@ function mentions_library_exists() {
  */
 function mentions_library_load() {
   if (mentions_library_exists()) {
-    $loaded           =& drupal_static(__FUNCTION__, FALSE);
-    $mentions_library =& drupal_static('mentions_library', NULL);
+    $loaded           = &backdrop_static(__FUNCTION__, FALSE);
+    $mentions_library = &backdrop_static('mentions_library', NULL);
 
     if (!$loaded) {
       switch ($mentions_library) {
         case 'default':
-          drupal_add_css(MENTIONS_TEXTCOMPLETE_PATH . '/jquery.textcomplete.css');
-          drupal_add_js(MENTIONS_TEXTCOMPLETE_PATH . '/jquery.textcomplete.min.js');
+          backdrop_add_css(MENTIONS_TEXTCOMPLETE_PATH . '/jquery.textcomplete.css');
+          backdrop_add_js(MENTIONS_TEXTCOMPLETE_PATH . '/jquery.textcomplete.min.js');
           break;
 
         case 'libraries':
@@ -505,7 +515,7 @@ function mentions_library_load() {
  */
 function mentions_defaults() {
   return array(
-    'input'  => array(
+    'input' => array(
       'prefix' => '[@',
       'suffix' => ']',
       'source' => 'property:name',
@@ -513,8 +523,8 @@ function mentions_defaults() {
     'output' => array(
       'prefix' => '@',
       'suffix' => '',
-      'text'   => '[user:name]',
-      'link'   => 'user/[user:uid]',
+      'text' => '[user:name]',
+      'link' => 'user/[user:uid]',
     ),
   );
 }
@@ -523,7 +533,7 @@ function mentions_defaults() {
  * Return a '@username' link to user's profile.
  */
 function theme_mentions($variables) {
-  $settings = variable_get('mentions', mentions_defaults());
+  $settings = config_get('mentions.settings', 'mentions');
   $user     = $variables['user'];
 
   foreach (array('text', 'link') as $type) {
@@ -533,7 +543,7 @@ function theme_mentions($variables) {
   }
 
   // Allow other modules to modify the link text and destination.
-  drupal_alter('mentions_link', $text, $link, $user);
+  backdrop_alter('mentions_link', $text, $link, $user);
 
   return l($settings['output']['prefix'] . $text . $settings['output']['suffix'], $link, array(
     'attributes' => array(
@@ -547,9 +557,21 @@ function theme_mentions($variables) {
  * Return mentions input format.
  */
 function theme_mentions_input($variables) {
-  $settings = variable_get('mentions', mentions_defaults());
+  $settings = config_get('mentions.settings', 'mentions');
 
   $text = $settings['input']['prefix'] . $variables['text'] . $settings['input']['suffix'];
 
   return $variables['raw'] ? $text : '<strong>' . $text . '</strong>';
+}
+
+/**
+ * Implements hook_autoload_info().
+ */
+function mentions_autoload_info() {
+  return array(
+    'mentions_views_handler_field_auid' => 'includes/views/handlers/mentions_views_handler_field_auid.inc',
+    'mentions_views_handler_field_content' => 'includes/views/handlers/mentions_views_handler_field_content.inc',
+    'mentions_views_handler_field_link' => 'includes/views/handlers/mentions_views_handler_field_link.inc',
+    'mentions_views_handler_field_title' => 'includes/views/handlers/mentions_views_handler_field_title.inc',
+  );
 }

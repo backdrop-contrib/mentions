@@ -26,7 +26,10 @@ class mentions_views_handler_field_link extends views_handler_field {
   function option_definition() {
     $options = parent::option_definition();
 
-    $options['text'] = array('default' => '', 'translatable' => TRUE);
+    $options['text'] = array(
+      'default' => '',
+      'translatable' => TRUE,
+    );
 
     return $options;
   }
@@ -34,8 +37,8 @@ class mentions_views_handler_field_link extends views_handler_field {
   function options_form(&$form, &$form_state) {
     parent::options_form($form, $form_state);
     $form['text'] = array(
-      '#type'          => 'textfield',
-      '#title'         => t('Text to display'),
+      '#type' => 'textfield',
+      '#title' => t('Text to display'),
       '#default_value' => $this->options['text'],
     );
   }

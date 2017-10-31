@@ -37,8 +37,8 @@ class mentions_views_handler_field_auid extends views_handler_field_user_name {
       }
     }
     // If we want a formatted username, do that.
-    if (!empty($this->options['format_username'])) {
-      return format_username($account);
+    if (!empty($this->options['user_format_name'])) {
+      return user_format_name($account);
     }
 
     // Otherwise, there's no special handling, so return the data directly.

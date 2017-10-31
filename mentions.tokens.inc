@@ -5,56 +5,57 @@
  */
 
 /**
- * Implements hook_token_info().
+ * Implements hook_token_info().().
  */
 function mentions_token_info() {
   $type = array(
-    'name'        => t('Mentions'),
+    'name' => t('Mentions'),
     'description' => t('Tokens related to individual mentions.'),
-    'needs-data'  => 'mentions',
+    'needs-data' => 'mentions',
   );
 
   // Core tokens for mentions.
   $mentions['mid'] = array(
-    'name'        => t('Mention ID'),
+    'name' => t('Mention ID'),
     'description' => t('The unique ID of the mention'),
   );
 
   // Chained tokens for mentions.
   $mentions['uid'] = array(
-    'name'        => t('User'),
+    'name' => t('User'),
     'description' => t('The mentioned user.'),
-    'type'        => 'user',
+    'type' => 'user',
   );
 
   $mentions['auid'] = array(
-    'name'        => t('Author'),
+    'name' => t('Author'),
     'description' => t('The author of the mention.'),
-    'type'        => 'user',
+    'type' => 'user',
   );
 
   $mention['created'] = array(
-    'name'        => t('Date created'),
+    'name' => t('Date created'),
     'description' => t('The date the mention was created.'),
-    'type'        => 'date',
+    'type' => 'date',
   );
 
   $mention['changed'] = array(
-    'name'        => t('Date changed'),
+    'name' => t('Date changed'),
     'description' => t('The date the mention was last changed.'),
-    'type'        => 'date',
+    'type' => 'date',
   );
 
   return array(
-    'types'  => array('mentions' => $type),
+    'types' => array('mentions' => $type),
     'tokens' => array('mentions' => $mentions),
   );
 }
 
 /**
- * Implements hook_tokens().
+ * Implements hook_tokens().().
  */
 function mentions_tokens($type, $tokens, array $data = array(), array $options = array()) {
+  $config = config('mentions.settings');
   $url_options = array('absolute' => TRUE);
   if (isset($options['language'])) {
     $url_options['language'] = $options['language'];
@@ -77,16 +78,16 @@ function mentions_tokens($type, $tokens, array $data = array(), array $options =
           $replacements[$original] = $mention->mid;
           break;
 
-        // Default values for the chained tokens handled below.
+          // Default values for the chained tokens handled below.
         case 'uid':
           $user                    = user_load($mention->uid);
-          $name                    = ($mention->uid == 0) ? variable_get('anonymous', t('Anonymous')) : $user->name;
+          $name                    = ($mention->uid == 0) ? config_get('system.performance', 'anonymous') : $user->name;
           $replacements[$original] = $sanitize ? filter_xss($name) : $name;
           break;
 
         case 'auid':
           $author                  = user_load($mention->auid);
-          $name                    = ($mention->auid == 0) ? variable_get('anonymous', t('Anonymous')) : $author->name;
+          $name                    = ($mention->auid == 0) ? config_get('system.performance', 'anonymous') : $author->name;
           $replacements[$original] = $sanitize ? filter_xss($name) : $name;
           break;
 

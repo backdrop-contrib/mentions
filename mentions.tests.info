@@ -1,0 +1,12 @@
+[MentionsTestCase]
+name = MentionsTestCase
+description = MentionsTestCase
+group = mentions
+file = tests/mentions.test
+
+[MentionsCoreTestCase]
+name = Mentions core functionality
+description = Tests core Mentions functionality.
+group = Mentions
+file = tests/mentions.test
+

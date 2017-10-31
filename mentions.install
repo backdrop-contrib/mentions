@@ -5,53 +5,53 @@
  */
 
 /**
- * Implements hook_schema().
+ * Implements hook_schema().().
  */
 function mentions_schema() {
   $schema['mentions'] = array(
-    'fields'      => array(
-      'mid'         => array(
+    'fields' => array(
+      'mid' => array(
         'description' => 'The primary identifier for a mention.',
-        'type'        => 'serial',
-        'unsigned'    => TRUE,
-        'not null'    => TRUE,
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
       ),
       'entity_type' => array(
-        'type'     => 'varchar',
-        'length'   => 32,
+        'type' => 'varchar',
+        'length' => 32,
         'not null' => TRUE,
-        'default'  => '',
+        'default' => '',
       ),
-      'entity_id'   => array(
-        'type'     => 'int',
+      'entity_id' => array(
+        'type' => 'int',
         'unsigned' => TRUE,
         'not null' => TRUE,
-        'default'  => 0,
+        'default' => 0,
       ),
-      'uid'         => array(
-        'type'     => 'int',
+      'uid' => array(
+        'type' => 'int',
         'unsigned' => TRUE,
         'not null' => TRUE,
-        'default'  => 0,
+        'default' => 0,
       ),
-      'auid'        => array(
-        'type'     => 'int',
+      'auid' => array(
+        'type' => 'int',
         'unsigned' => TRUE,
         'not null' => TRUE,
-        'default'  => 0,
+        'default' => 0,
       ),
-      'created'     => array(
-        'type'     => 'int',
+      'created' => array(
+        'type' => 'int',
         'not null' => TRUE,
-        'default'  => 0,
+        'default' => 0,
       ),
-      'changed'     => array(
-        'type'     => 'int',
+      'changed' => array(
+        'type' => 'int',
         'not null' => TRUE,
-        'default'  => 0,
+        'default' => 0,
       ),
     ),
-    'indexes'     => array(
+    'indexes' => array(
       'mid' => array(
         'mid',
       ),
@@ -63,72 +63,48 @@ function mentions_schema() {
 }
 
 /**
- * Implements hook_uninstall().
+ * Implements hook_uninstall().().
  */
 function mentions_uninstall() {
-  variable_del('mentions');
+  config_clear('mentions.settings', 'mentions');
+}
+
+// TODO The old hook_update_N functions cannot be applied to Backdrop.
+function mentions_update_7100() { }
+
+/**
+ * Implements hook_update_last_removed().
+ */
+function mentions_update_last_removed() {
+  return 7100;
 }
 
 /**
- * Update from drupal 6 mentions
+ * Implements hook_update_N().
  */
-function mentions_update_7100() {
-  // Update database schema.
-  db_change_field('mentions', 'type', 'entity_type', array(
-    'type'     => 'varchar',
-    'length'   => 32,
-    'not null' => TRUE,
-    'default'  => '',
-  ));
-  db_change_field('mentions', 'mid', 'entity_id', array(
-    'type'     => 'int',
-    'unsigned' => TRUE,
-    'not null' => TRUE,
-    'default'  => 0,
-  ));
-  db_drop_index('mentions', 'uid');
-  db_add_field('mentions', 'mid', array(
-    'description' => 'The primary identifier for a mention.',
-    'type'        => 'serial',
-    'unsigned'    => TRUE,
-    'not null'    => TRUE,
-  ), array(
-    'indexes'     => array(
-      'mid' => array('mid'),
-    ),
-    'primary key' => array('mid'),
-  ));
-  db_change_field('mentions', 'timestamp', 'created', array(
-    'type'     => 'int',
-    'not null' => TRUE,
-    'default'  => 0,
-  ));
-  db_add_field('mentions', 'changed', array(
-    'type'     => 'int',
-    'not null' => TRUE,
-    'default'  => 0,
-  ));
+function mentions_update_1000() {
+  $config = config('mentions .settings');
+  $config->set('mentions', update_variable_get('mentions', 'dynamic value in file /mentions/mentions.module line 550'));
+  $config->set('mentions_input_prefix', update_variable_get('mentions_input_prefix', 'dynamic value in file /mentions/mentions.install line 115'));
+  $config->set('mentions_input_suffix', update_variable_get('mentions_input_suffix', 'dynamic value in file /mentions/mentions.install line 116'));
+  $config->set('mentions_output_prefix', update_variable_get('mentions_output_prefix', '@'));
+  $config->set('mentions_output_suffix', update_variable_get('mentions_output_suffix', ''));
+  $config->set('mentions_output_content', update_variable_get('mentions_output_content', 'dynamic value in file /mentions/mentions.install line 122'));
+  update_variable_del('mentions');
+  update_variable_del('mentions_input_prefix');
+  update_variable_del('mentions_input_suffix');
+  update_variable_del('mentions_output_prefix');
+  update_variable_del('mentions_output_suffix');
+  update_variable_del('mentions_output_content');
+}
 
-  // Migrate old variables into new format.
-  $settings = array(
-    'input'  => array(
-      'prefix' => variable_get('mentions_input_prefix', '[@'),
-      'suffix' => variable_get('mentions_input_suffix', ']'),
-      'source' => 'property:name',
-    ),
-    'output' => array(
-      'prefix' => variable_get('mentions_output_prefix', '@'),
-      'suffix' => variable_get('mentions_output_suffix', ''),
-      'text'   => variable_get('mentions_output_content', '[user:name]'),
-      'link'   => 'user/[user:uid]',
-    )
-  );
-  variable_set('mentions', $settings);
-
-  // Remove old variables entries.
-  variable_del('mentions_input_prefix');
-  variable_del('mentions_input_suffix');
-  variable_del('mentions_output_prefix');
-  variable_del('mentions_output_prefix');
-  variable_del('mentions_output_content');
+/**
+ * Implements hook_install().
+ */
+function mentions_install() {
+  // Dynamically generated variable data was detected.
+  // /mentions/mentions.module line 550
+  // /mentions/mentions.install line 115
+  // /mentions/mentions.install line 116
+  // /mentions/mentions.install line 122
 }
