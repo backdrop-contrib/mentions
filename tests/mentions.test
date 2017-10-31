@@ -7,7 +7,7 @@
 /**
  * Class MentionsTestCase
  */
-class MentionsTestCase extends DrupalWebTestCase {
+class MentionsTestCase extends BackdropWebTestCase {
   protected $adminUser = NULL;
   protected $authUser = NULL;
 
@@ -18,20 +18,20 @@ class MentionsTestCase extends DrupalWebTestCase {
     parent::setUp('mentions');
 
     // Create administrative user.
-    $this->adminUser = $this->drupalCreateUser(array(
+    $this->adminUser = $this->backdropCreateUser(array(
       'access content',
       'administer filters',
-      'create article content',
-      'delete own article content',
-      'edit own article content',
+      'create post content',
+      'delete own post content',
+      'edit own post content',
       'use text format filtered_html',
     ));
 
     // Create authenticated user.
-    $this->authUser = $this->drupalCreateUser(array(
+    $this->authUser = $this->backdropCreateUser(array(
       'access content',
-      'create article content',
-      'edit own article content',
+      'create post content',
+      'edit own post content',
       'use text format filtered_html',
     ));
   }
@@ -125,22 +125,24 @@ class MentionsCoreTestCase extends MentionsTestCase {
    * Test core Mentions functionality.
    */
   function testMentionsCore() {
-    $this->drupalLogin($this->adminUser);
+    $this->backdropLogin($this->adminUser);
 
     // Ensure Mentions filter is available.
-    $this->drupalGet('admin/config/content/formats/filtered_html');
+    $this->backdropGet('admin/config/content/formats/filtered_html');
     $this->assertFieldByName('filters[filter_mentions][status]', NULL, 'Mentions filter is available.');
 
     // Enable Mentions filter.
     $edit = array('filters[filter_mentions][status]' => TRUE);
-    $this->drupalPost('admin/config/content/formats/filtered_html', $edit, t('Save configuration'));
+    $this->backdropPost('admin/config/content/formats/filtered_html', $edit, t('Save configuration'));
 
     // Ensure Mentions filter is enabled.
-    $filters = filter_list_format('filtered_html');
+    backdrop_static_reset('filter_formats');
+    $format = filter_format_load('filtered_html');
+    $filters = $format->filters;
     $this->assertTrue($filters['filter_mentions']->status, 'Mentions filter is enabled on Filtered HTML text format.');
 
     // Ensure Mentions filter tip is in place.
-    $this->drupalGet('node/add/article');
+    $this->backdropGet('node/add/post');
     $this->assertText(t("Converts !username and !uid into a link the user's profile page.", array(
       '!username' => '[@username]',
       '!uid'      => '[@#uid]',
@@ -148,15 +150,16 @@ class MentionsCoreTestCase extends MentionsTestCase {
 
     // Create content with a mention to admin user by username.
     $settings = array(
-      'type'  => 'article',
+      'type'  => 'post',
       'title' => $this->randomString(),
       'body'  => array(LANGUAGE_NONE => array(array('value' => "[@{$this->adminUser->name}]"))),
     );
-    $node     = $this->drupalCreateNode($settings);
+    $node     = $this->backdropCreateNode($settings);
 
     // Ensure Mention was correctly created and is linked to user profile.
-    $this->drupalGet("node/{$node->nid}");
-    $this->assertLinkByHrefAndLabel("user/{$this->adminUser->uid}", "@{$this->adminUser->name}");
+    $this->backdropGet("node/{$node->nid}");
+    $username = strtolower($this->adminUser->name);
+    $this->assertLinkByHrefAndLabel("accounts/{$username}", "@{$this->adminUser->name}");
     $this->assertMentionExists(array(
       'entity_type' => 'node',
       'entity_id'   => $node->nid,
@@ -166,15 +169,15 @@ class MentionsCoreTestCase extends MentionsTestCase {
 
     // Create content with a mention to admin user by #uid.
     $settings = array(
-      'type'  => 'article',
+      'type'  => 'post',
       'title' => $this->randomString(),
       'body'  => array(LANGUAGE_NONE => array(array('value' => "[@#{$this->adminUser->uid}]")))
     );
-    $node     = $this->drupalCreateNode($settings);
+    $node     = $this->backdropCreateNode($settings);
 
     // Ensure Mention was correctly created and is linked to user profile.
-    $this->drupalGet("node/{$node->nid}");
-    $this->assertLinkByHrefAndLabel("user/{$this->adminUser->uid}", "@{$this->adminUser->name}");
+    $this->backdropGet("node/{$node->nid}");
+    $this->assertLinkByHrefAndLabel("accounts/{$username}", "@{$this->adminUser->name}");
     $this->assertMentionExists(array(
       'entity_type' => 'node',
       'entity_id'   => $node->nid,
@@ -184,7 +187,7 @@ class MentionsCoreTestCase extends MentionsTestCase {
 
     // Update Mention from admin user to auth user.
     $edit = array('body[und][0][value]' => "[@{$this->authUser->name}]");
-    $this->drupalPost("node/$node->nid/edit", $edit, t('Save'));
+    $this->backdropPost("node/$node->nid/edit", $edit, t('Save'));
 
     // Ensure old mention removed and new mention created.
     $this->assertNoMentionExists(array(
@@ -201,7 +204,7 @@ class MentionsCoreTestCase extends MentionsTestCase {
     ), 'New mention created.');
 
     // Ensure mentions removed when node deleted.
-    $this->drupalPost("node/{$node->nid}/delete", array(), t('Delete'));
+    $this->backdropPost("node/{$node->nid}/delete", array(), t('Delete'));
     $this->assertNoMentionExists(array(
       'entity_type' => 'node',
       'entity_id'   => $node->nid,
@@ -216,7 +219,7 @@ class MentionsCoreTestCase extends MentionsTestCase {
       'mentions[output][text]'   => '[user:uid]',
       'mentions[output][link]'   => 'user/[user:name]',
     );
-    $this->drupalPost('admin/config/content/mentions', $edit, t('Save configuration'));
+    $this->backdropPost('admin/config/content/mentions', $edit, t('Save configuration'));
     foreach ($edit as $name => $value) {
       $this->assertFieldByName($name, $value);
     }

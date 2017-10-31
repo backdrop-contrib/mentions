@@ -26,9 +26,9 @@ Features
 Recommended Modules
 --------------------------------------------------------------------------------
 
-* Libraries API - https://drupal.org/project/libraries
-* Token         - https://drupal.org/project/token
-* Views         - https://drupal.org/project/views
+* Libraries API - https://backdrop.org/project/libraries
+* Token         - https://backdrop.org/project/token
+* Views         - https://backdrop.org/project/views
 
 
 
@@ -39,7 +39,7 @@ The jQuery textcomplete library adds autocompletion of mentions, to install it
 follow these steps:
 
 1. (optional) Download and install the Libraries API module.
-    http://drupal.org/project/libraries
+    http://backdrop.org/project/libraries
 
 2. Download the jQuery textcomplete library and extract and move it into your
    libraries folder as 'textcomplete' (eg. sites/all/libraries/textcomplete).
@@ -60,8 +60,8 @@ Usage / Configuration
 
 Once installed, the Mentions filter needs to be enabled on your desired Text
 formats, this can be done via the Text formats page.
-* http://[www.yoursite.com/path/to/drupal]/admin/config/content/formats
+* http://[www.yoursite.com/path/to/backdrop]/admin/config/content/formats
 
 Customisation settings for input and output patterns are available via the
 Mentions configuration form:
-* http://[www.yoursite.com/path/to/drupal]/admin/config/content/mentions
+* http://[www.yoursite.com/path/to/backdrop]/admin/config/content/mentions
