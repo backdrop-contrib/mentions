@@ -14,8 +14,10 @@ Features
 * An Input filter to convert [@username] or [@#uid] to the user's profile.
 * Customizable input ([@username], [@#uid]) and output (@username) patterns,
   including support for the Token module.
-* Autocompletion of mentions; Using the jQuery textcomplete library usernames
-  will be suggested while mentioning.
+* Optional: autocompletion of mentions using the jQuery textcomplete library.
+  This currently does not work with CKEditor   and consequently has not been 
+  tested. A configuration option is available to prevent loading the 
+  textcomplete library.
 * Integrations with:
   * Machine name - Use a Machine name field as the mention source.
   * Rules - React to created, updated and deleted mentions.
@@ -23,7 +25,7 @@ Features
 
 
 
-jQuery textcomplete - Autocompletion of mentions (not working with core)
+jQuery textcomplete - Autocompletion of mentions (not working with CKEditor)
 --------------------------------------------------------------------------------
 
 The jQuery textcomplete library adds autocompletion of mentions, to install it
@@ -67,7 +69,7 @@ complete text.
 Current Maintainers
 -------------------
 
-- docwilmot (https://github.com/docwilmot
+- docwilmot (https://github.com/docwilmot)
 
 Credit
 -------
