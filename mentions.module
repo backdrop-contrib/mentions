@@ -265,7 +265,7 @@ function mentions_crud_delete($entity_type, $entity_id) {
  */
 function mentions_config_info() {
   $prefixes['mentions.settings'] = array(
-    'label' => t('Module name settings'),
+    'label' => t('Mentions settings'),
     'group' => t('Configuration'),
   );
 }
@@ -369,9 +369,9 @@ function mentions_process_text_format($element, $form_state) {
       }
     }
 
-    if ($mentions_filter) {
+    $settings = config_get('mentions.settings', 'mentions');
+    if ($mentions_filter && $settings['textcomplete']) {
       mentions_library_load();
-      $settings = config_get('mentions.settings', 'mentions');
 
       backdrop_add_js(array(
         'mentions' => array(

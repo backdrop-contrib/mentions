@@ -16,6 +16,12 @@ function mentions_form($form, $form_state) {
     '#tree' => TRUE,
   );
 
+  $form['mentions']['textcomplete'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Load textcomplete library'),
+    '#default_value' => $settings['textcomplete'],
+  );
+
   $form['mentions']['input'] = array(
     '#type' => 'fieldset',
     '#title' => t('Input'),

@@ -1,4 +1,5 @@
 {
     "_config_name": "mentions.settings",
-    "mentions": []
+    "mentions": [],
+    "textcomplete": true
 }
